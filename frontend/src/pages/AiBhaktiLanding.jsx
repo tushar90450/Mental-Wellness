@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { ChevronDown, Sparkles, Heart, Palette, Lock, Users, ArrowRight, Play, Star, Quote, Menu, X, Zap, Eye, Brain, Compass } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Sparkles, Heart, Eye, Palette, Shield, Users, Mail, Twitter, Instagram, Github, Play, ArrowRight, Menu, X } from 'lucide-react';
 
 const AainaLanding = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -7,714 +7,458 @@ const AainaLanding = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrollY, setScrollY] = useState(0);
-  const heroRef = useRef(null);
+
+  const testimonials = [
+    {
+      text: "Aaina helped me see my anxiety as a beautiful storm cloud, not a monster. For the first time, I felt understood.",
+      author: "Maya, 19",
+      role: "College Student"
+    },
+    {
+      text: "The wisdom engine connected my heartbreak to a Rumi poem. I realized I wasn't alone in this pain.",
+      author: "Alex, 22",
+      role: "Artist"
+    },
+    {
+      text: "My reflective mosaic shows how far I've come. Each piece of art tells the story of my growth.",
+      author: "Sam, 20",
+      role: "Writer"
+    }
+  ];
 
   useEffect(() => {
     setIsVisible(true);
-    const interval = setInterval(() => {
-      setCurrentTestimonial((prev) => (prev + 1) % 3);
-    }, 4000);
-
     const handleMouseMove = (e) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
-
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
-
+    const handleScroll = () => setScrollY(window.scrollY);
+    
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('scroll', handleScroll);
     
     return () => {
-      clearInterval(interval);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
-  const testimonials = [
-    {
-      text: "Aaina ne meri anxiety ko ek beautiful painting ki tarah dikhaya. Pehli baar laga ki main samjha gaya hun.",
-      name: "Priya, 19",
-      role: "Student"
-    },
-    {
-      text: "Ancient wisdom modern art ke saath - it's pure magic! Meri struggles ko naya meaning mila.",
-      name: "Arjun, 22", 
-      role: "Designer"
-    },
-    {
-      text: "Finally ek app jo mujhe 'fix' nahi karna chahta. It celebrates my emotional complexity beautifully.",
-      name: "Sneha, 20",
-      role: "Artist"
-    }
-  ];
-
-  const features = [
-    {
-      icon: <Palette className="w-10 h-10" />,
-      title: "Emotional Canvas",
-      description: "Transform your raw emotions into stunning symbolic art through our AI Alchemist",
-      color: "from-pink-500 to-rose-500",
-      bgColor: "from-pink-500/20 to-rose-500/20"
-    },
-    {
-      icon: <Brain className="w-10 h-10" />,
-      title: "Wisdom Engine", 
-      description: "Ancient philosophical texts meet cutting-edge AI for profound emotional insights",
-      color: "from-blue-500 to-cyan-500",
-      bgColor: "from-blue-500/20 to-cyan-500/20"
-    },
-    {
-      icon: <Eye className="w-10 h-10" />,
-      title: "Reflective Mosaic",
-      description: "Your private encrypted gallery - a visual timeline of emotional growth and discovery",
-      color: "from-purple-500 to-indigo-500", 
-      bgColor: "from-purple-500/20 to-indigo-500/20"
-    }
-  ];
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-    <div className="min-h-screen bg-black text-white overflow-x-hidden relative">
-      {/* CSS Animations */}
-      <style jsx>{`
-        @keyframes float {
-          0%, 100% { 
-            transform: translateY(0px) translateX(0px) scale(1);
-            opacity: 0.4;
-          }
-          25% {
-            transform: translateY(-20px) translateX(10px) scale(1.1);
-            opacity: 0.8;
-          }
-          50% {
-            transform: translateY(-10px) translateX(-15px) scale(0.9);
-            opacity: 1;
-          }
-          75% {
-            transform: translateY(-30px) translateX(5px) scale(1.05);
-            opacity: 0.6;
-          }
-        }
-        .animate-float {
-          animation: float 4s ease-in-out infinite;
-        }
-      `}</style>
-
-      {/* Animated Background */}
-      <div className="fixed inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/50 via-pink-900/30 to-indigo-900/50"></div>
-        
-        {/* Dynamic Gradient Orbs */}
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 overflow-x-hidden">
+      {/* Floating Background Orbs */}
+      <div className="fixed inset-0 pointer-events-none">
         <div 
-          className="absolute w-96 h-96 bg-gradient-to-r from-pink-500/30 to-purple-500/30 rounded-full blur-3xl animate-pulse"
+          className="absolute w-64 h-64 bg-gradient-to-r from-purple-200 to-pink-200 rounded-full opacity-20 animate-float"
           style={{
-            transform: `translate(${mousePosition.x * 0.02}px, ${mousePosition.y * 0.02}px)`,
-            left: '10%',
-            top: '20%'
+            left: mousePosition.x * 0.02 + 100,
+            top: mousePosition.y * 0.02 + 100,
           }}
-        ></div>
+        />
         <div 
-          className="absolute w-80 h-80 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-full blur-3xl animate-pulse"
+          className="absolute w-48 h-48 bg-gradient-to-r from-blue-200 to-indigo-200 rounded-full opacity-30 animate-float"
           style={{
-            transform: `translate(${mousePosition.x * -0.03}px, ${mousePosition.y * -0.03}px)`,
-            right: '10%',
-            top: '40%',
-            animationDelay: '1s'
-          }}
-        ></div>
-        <div 
-          className="absolute w-72 h-72 bg-gradient-to-r from-yellow-500/25 to-orange-500/25 rounded-full blur-3xl animate-pulse"
-          style={{
-            transform: `translate(${mousePosition.x * 0.025}px, ${mousePosition.y * 0.025}px)`,
-            left: '50%',
-            bottom: '20%',
+            right: mousePosition.x * 0.03 + 150,
+            top: mousePosition.y * 0.03 + 200,
             animationDelay: '2s'
           }}
-        ></div>
-
-        {/* Floating Particles */}
-        {[...Array(30)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-1 h-1 bg-white/40 rounded-full animate-float"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 5}s`,
-              animationDuration: `${3 + Math.random() * 4}s`
-            }}
-          />
-        ))}
+        />
       </div>
 
-      {/* Glassmorphism Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-black/20 backdrop-blur-2xl border-b border-white/10">
-        <div className="flex justify-between items-center p-6 lg:px-12">
-          <div className="flex items-center space-x-3">
-            <div className="relative">
-              <div className="w-12 h-12 bg-gradient-to-br from-pink-500 via-purple-500 to-indigo-500 rounded-2xl flex items-center justify-center transform rotate-12 hover:rotate-0 transition-all duration-500">
-                <Sparkles className="w-7 h-7 text-white animate-pulse" />
-              </div>
-              <div className="absolute -inset-1 bg-gradient-to-br from-pink-500 to-purple-500 rounded-2xl blur opacity-30 group-hover:opacity-60 transition-opacity"></div>
+      {/* Navigation */}
+      <nav className="relative z-50 px-6 py-4">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+              <Eye className="w-4 h-4 text-white" />
             </div>
-            <span className="text-3xl font-black bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+            <span className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
               Aaina
             </span>
           </div>
           
-          <div className="hidden md:flex space-x-8">
-            {['Features', 'Vision', 'Stories'].map((item) => (
-              <a 
-                key={item}
-                href={`#${item.toLowerCase()}`} 
-                className="relative text-white/80 hover:text-white transition-all duration-300 group font-medium"
-              >
-                {item}
-                <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-pink-500 to-purple-500 group-hover:w-full transition-all duration-300"></div>
-              </a>
-            ))}
+          <div className="hidden md:flex items-center space-x-8">
+            <a href="#features" className="text-gray-600 hover:text-purple-600 transition-colors">Features</a>
+            <a href="#vision" className="text-gray-600 hover:text-purple-600 transition-colors">Vision</a>
+            <a href="#testimonials" className="text-gray-600 hover:text-purple-600 transition-colors">Stories</a>
+            <button className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-2 rounded-full hover:shadow-lg transform hover:scale-105 transition-all duration-200">
+              Join Waitlist
+            </button>
           </div>
 
-          <button className="group relative">
-            <div className="absolute -inset-2 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full blur opacity-30 group-hover:opacity-60 transition-opacity"></div>
-            <div className="relative bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 px-8 py-3 rounded-full font-bold text-white hover:shadow-2xl hover:scale-105 transition-all duration-300 animate-pulse hover:animate-none">
-              Join Waitlist ✨
-            </div>
-          </button>
-
-          {/* Mobile Menu */}
           <button 
-            className="md:hidden text-white"
+            className="md:hidden p-2"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Toggle menu"
           >
             {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
 
-        {/* Mobile Menu Dropdown */}
+        {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden bg-black/90 backdrop-blur-2xl border-t border-white/10">
-            <div className="px-6 py-4 space-y-4">
-              {['Features', 'Vision', 'Stories'].map((item) => (
-                <a 
-                  key={item}
-                  href={`#${item.toLowerCase()}`} 
-                  className="block text-white/80 hover:text-white transition-colors font-medium"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {item}
-                </a>
-              ))}
+          <div className="absolute top-full left-0 right-0 bg-white/90 backdrop-blur-md border border-gray-200 rounded-lg mx-6 mt-2 p-6 md:hidden">
+            <div className="flex flex-col space-y-4">
+              <a href="#features" className="text-gray-600 hover:text-purple-600 transition-colors">Features</a>
+              <a href="#vision" className="text-gray-600 hover:text-purple-600 transition-colors">Vision</a>
+              <a href="#testimonials" className="text-gray-600 hover:text-purple-600 transition-colors">Stories</a>
+              <button className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-2 rounded-full">
+                Join Waitlist
+              </button>
             </div>
           </div>
         )}
       </nav>
 
       {/* Hero Section */}
-      <section ref={heroRef} className="relative z-40 min-h-screen flex items-center justify-center px-6 lg:px-12 pt-24">
-        <div className={`max-w-7xl mx-auto text-center transition-all duration-1500 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'}`}>
-          
-          {/* Floating Badge */}
-          <div className="mb-8">
-            <div className="inline-flex items-center space-x-2 bg-white/5 backdrop-blur-2xl border border-white/20 rounded-full px-6 py-3 text-sm font-medium hover:bg-white/10 transition-all duration-300 group">
-              <div className="w-3 h-3 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full animate-pulse"></div>
-              <span className="bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-                ✨ The Mirror - Your Emotional Reflection
+      <section className="relative px-6 py-20">
+        <div className="max-w-4xl mx-auto text-center">
+          <div 
+            className={`transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
+          >
+            <div className="inline-flex items-center space-x-2 bg-white/50 backdrop-blur-sm border border-purple-200 rounded-full px-4 py-2 mb-8 animate-pulse">
+              <Sparkles className="w-4 h-4 text-purple-500" />
+              <span className="text-sm text-purple-700">The Mirror - Your Emotional Reflection</span>
+            </div>
+
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+              Your emotions are not a{' '}
+              <span className="bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent animate-pulse">
+                problem to be solved
               </span>
-              <Zap className="w-4 h-4 text-yellow-400 group-hover:animate-bounce" />
+              <br />
+              They are a{' '}
+              <span className="bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
+                masterpiece waiting to be created
+              </span>
+            </h1>
+
+            <p className="text-xl text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed">
+              Transform your raw feelings into symbolic art and profound wisdom. 
+              Aaina is your AI-powered creative partner for emotional expression.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+              <button className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-8 py-4 rounded-full hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center space-x-2 group">
+                <span>Start Your Journey</span>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </button>
+              <button className="border-2 border-purple-200 text-purple-600 px-8 py-4 rounded-full hover:bg-purple-50 hover:border-purple-300 transition-all duration-300 flex items-center justify-center space-x-2">
+                <Play className="w-4 h-4" />
+                <span>Watch Magic</span>
+              </button>
             </div>
-          </div>
-          
-          <h1 className="text-6xl lg:text-8xl font-black mb-8 leading-tight">
-            <span className="block text-white mb-4">Your emotions are</span>
-            <span className="block text-white mb-4">not a</span>
-            <span className="block bg-gradient-to-r from-pink-400 via-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent animate-pulse">
-              problem to be solved
-            </span>
-          </h1>
-          
-          <div className="relative mb-8">
-            <p className="text-2xl lg:text-3xl font-bold text-gray-100 max-w-5xl mx-auto leading-relaxed">
-              They are a <span className="bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent font-black">masterpiece waiting to be created.</span>
-            </p>
-            <p className="text-lg lg:text-xl text-gray-300 max-w-4xl mx-auto mt-6 leading-relaxed">
-              Transform your deepest feelings into stunning symbolic art and discover ancient wisdom for modern struggles through our revolutionary AI companion.
-            </p>
-          </div>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
-            <button className="group relative overflow-hidden">
-              <div className="absolute -inset-2 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 rounded-2xl blur opacity-40 group-hover:opacity-80 transition-opacity animate-pulse"></div>
-              <div className="relative bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 px-12 py-5 rounded-2xl font-black text-white text-xl hover:shadow-2xl hover:scale-110 transition-all duration-300 flex items-center justify-center">
-                Start Your Journey
-                <ArrowRight className="ml-3 w-6 h-6 group-hover:translate-x-2 transition-transform" />
-              </div>
-            </button>
-            
-            <button className="group relative overflow-hidden">
-              <div className="relative bg-white/10 backdrop-blur-2xl border-2 border-white/20 px-12 py-5 rounded-2xl font-bold text-white text-xl hover:bg-white/20 hover:border-white/40 transition-all duration-300 flex items-center justify-center">
-                <Play className="mr-3 w-6 h-6 group-hover:scale-125 transition-transform" />
-                Watch Magic ✨
-              </div>
-            </button>
-          </div>
-
-          {/* Hero Demo */}
-          <div className="relative max-w-6xl mx-auto">
-            <div className="bg-white/5 backdrop-blur-2xl rounded-3xl p-8 lg:p-12 border border-white/20 hover:border-white/40 transition-all duration-500 group">
-              <div className="grid lg:grid-cols-2 gap-8 items-center">
-                
-                {/* Input Side */}
-                <div className="space-y-6">
-                  <div className="bg-black/40 backdrop-blur-xl rounded-2xl p-6 border border-gray-600/50 transform group-hover:scale-105 transition-all duration-300">
-                    <div className="flex items-center space-x-3 mb-4">
-                      <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                      <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                      <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                      <span className="text-gray-400 text-sm font-mono ml-4">Your emotions</span>
-                    </div>
-                    <p className="text-gray-300 text-sm mb-3 font-mono">You shared:</p>
-                    <p className="text-white text-lg leading-relaxed">
-                      "Main apne future ko lekar bahut anxious hun... sab kuch uncertain lagta hai, kya hoga pata nahi..."
+            {/* Hero Demo */}
+            <div className="bg-white/60 backdrop-blur-md border border-purple-200 rounded-2xl p-8 max-w-3xl mx-auto">
+              <div className="grid md:grid-cols-2 gap-8">
+                <div className="space-y-4">
+                  <h3 className="font-semibold text-gray-800">Express Your Feelings</h3>
+                  <div className="bg-gray-50 rounded-lg p-4 text-left">
+                    <p className="text-gray-600 italic">
+                      "I feel anxious about my future, like I'm standing at the edge of a cliff..."
                     </p>
-                    <div className="mt-4 flex items-center space-x-2">
-                      <div className="w-2 h-2 bg-purple-400 rounded-full animate-ping"></div>
-                      <span className="text-purple-400 text-xs font-medium">Processing with AI Alchemist...</span>
-                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2 text-sm text-purple-600">
+                    <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></div>
+                    <span>AI Alchemist processing...</span>
                   </div>
                 </div>
                 
-                {/* Output Side */}
-                <div className="space-y-6">
-                  <div className="bg-gradient-to-br from-emerald-500/20 via-blue-500/20 to-purple-500/20 backdrop-blur-xl rounded-2xl p-6 border border-emerald-400/30 transform group-hover:scale-105 group-hover:rotate-1 transition-all duration-300">
-                    
-                    {/* Generated Art */}
-                    <div className="relative w-full h-48 bg-gradient-to-br from-emerald-300 via-teal-400 to-blue-500 rounded-xl mb-6 flex items-center justify-center overflow-hidden group-hover:shadow-2xl transition-all duration-300">
-                      <div className="absolute inset-0 bg-black/10"></div>
-                      <div className="text-6xl animate-bounce hover:animate-pulse transition-all duration-300">🍓</div>
-                      <div className="absolute top-2 right-2">
-                        <div className="w-3 h-3 bg-white/60 rounded-full animate-pulse"></div>
-                      </div>
-                      <div className="absolute bottom-2 left-2 text-white/60 text-xs font-mono">
-                        Generated by Wisdom Engine
-                      </div>
+                <div className="space-y-4">
+                  <h3 className="font-semibold text-gray-800">Receive Art & Wisdom</h3>
+                  <div className="bg-gradient-to-br from-purple-100 to-pink-100 rounded-lg p-6 text-center">
+                    <div className="w-16 h-16 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full mx-auto mb-3 flex items-center justify-center">
+                      <Palette className="w-8 h-8 text-white" />
                     </div>
-                    
-                    {/* Wisdom Quote */}
-                    <div className="text-center">
-                      <Quote className="w-6 h-6 text-emerald-400 mx-auto mb-3" />
-                      <p className="text-white font-medium text-lg italic leading-relaxed mb-2">
-                        "शेर हमेशा पास है, यह सच है।<br/>
-                        लेकिन इस स्ट्रॉबेरी की मिठास भी है।"
-                      </p>
-                      <p className="text-emerald-400 text-sm font-mono">
-                        — Zen Wisdom, reimagined for you
-                      </p>
-                    </div>
-
-                    <div className="mt-4 flex items-center justify-center space-x-2">
-                      <Compass className="w-4 h-4 text-emerald-400 animate-spin" />
-                      <span className="text-emerald-400 text-xs font-medium">Ancient wisdom unlocked</span>
-                    </div>
+                    <p className="text-sm text-gray-700 italic mb-2">
+                      "The tiger is always near, this is true."
+                    </p>
+                    <p className="text-sm text-gray-700 italic">
+                      "But so is the sweetness of this strawberry."
+                    </p>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center">
-            <div className="w-1 h-3 bg-white/50 rounded-full mt-2 animate-pulse"></div>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section id="features" className="relative z-40 px-6 lg:px-12 py-32 bg-black/30 backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto">
-          
-          <div className="text-center mb-20">
-            <h2 className="text-5xl lg:text-7xl font-black mb-8">
-              <span className="bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">
-                Alchemy & Wisdom
-              </span>
+      <section id="features" className="px-6 py-20 bg-white/30">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Core Features & <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Technology</span>
             </h2>
-            <p className="text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed font-medium">
-              Expression is the antidote to despair. हमारा AI Alchemist आपकी emotions को art में बदलता है, 
-              जबकि Wisdom Engine आपको timeless human insights से जोड़ता है।
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Powered by cutting-edge AI and ancient wisdom, creating a unique space for emotional expression
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-3 gap-10">
-            {features.map((feature, index) => (
-              <div 
-                key={index} 
-                className={`group relative overflow-hidden bg-gradient-to-br ${feature.bgColor} backdrop-blur-2xl rounded-3xl p-8 border border-white/20 hover:border-white/40 transition-all duration-500 hover:scale-105 hover:-translate-y-2`}
-              >
-                
-                {/* Background Glow */}
-                <div className={`absolute -inset-1 bg-gradient-to-r ${feature.color} rounded-3xl blur opacity-0 group-hover:opacity-20 transition-opacity duration-500`}></div>
-                
-                <div className="relative z-10">
-                  <div className={`inline-flex p-4 rounded-2xl bg-gradient-to-br ${feature.color} mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300`}>
-                    <div className="text-white">
-                      {feature.icon}
-                    </div>
-                  </div>
-                  
-                  <h3 className="text-3xl font-black text-white mb-4 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-300 group-hover:bg-clip-text transition-all duration-300">
-                    {feature.title}
-                  </h3>
-                  
-                  <p className="text-gray-300 text-lg leading-relaxed group-hover:text-gray-200 transition-colors duration-300">
-                    {feature.description}
-                  </p>
-
-                  <div className="mt-6 opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
-                    <button className="text-white font-semibold flex items-center space-x-2 group/btn">
-                      <span>Explore Feature</span>
-                      <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-2 transition-transform" />
-                    </button>
-                  </div>
-                </div>
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="group bg-white/60 backdrop-blur-md border border-purple-200 rounded-2xl p-8 hover:shadow-xl hover:scale-105 transition-all duration-300">
+              <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <Palette className="w-6 h-6 text-white" />
               </div>
-            ))}
+              <h3 className="text-xl font-bold mb-4 text-gray-800">The Emotional Canvas</h3>
+              <p className="text-gray-600 leading-relaxed">
+                A zero-judgment zone where you express yourself through text or voice, 
+                instantly transformed into symbolic art and poetic mantras.
+              </p>
+            </div>
+
+            <div className="group bg-white/60 backdrop-blur-md border border-purple-200 rounded-2xl p-8 hover:shadow-xl hover:scale-105 transition-all duration-300">
+              <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <Heart className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-xl font-bold mb-4 text-gray-800">Wisdom Engine</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Using RAG technology, we draw from timeless spiritual and philosophical texts, 
+                connecting your struggles to shared human resilience.
+              </p>
+            </div>
+
+            <div className="group bg-white/60 backdrop-blur-md border border-purple-200 rounded-2xl p-8 hover:shadow-xl hover:scale-105 transition-all duration-300">
+              <div className="w-12 h-12 bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <Eye className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-xl font-bold mb-4 text-gray-800">Reflective Mosaic</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Your private, encrypted gallery becomes a visual timeline of growth, 
+                allowing for personal reflection and celebrating your emotional journey.
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Vision Section */}
-      <section id="vision" className="relative z-40 px-6 lg:px-12 py-32">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            
-            <div className="space-y-8">
-              <h2 className="text-5xl lg:text-6xl font-black leading-tight">
-                A New Language for{' '}
-                <span className="bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
-                  Emotion
-                </span>
+      <section id="vision" className="px-6 py-20">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-3xl md:text-4xl font-bold mb-6">
+                The Vision: A New <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Language for Emotion</span>
               </h2>
-              
-              <div className="space-y-6 text-xl text-gray-300 leading-relaxed">
-                <p>
-                  Current mental wellness apps fail young people by being <strong className="text-red-400">clinical and generic</strong>, 
-                  increasing feelings of isolation.
-                </p>
-                <p>
-                  <strong className="text-white text-2xl">Aaina offers a revolutionary alternative.</strong> 
-                  यह therapy bot नहीं है; यह एक AI-powered creative partner है जो आपकी raw, confusing 
-                  feelings को symbolic art और profound wisdom में transform करता है।
-                </p>
-                <p>
-                  Using cutting-edge <strong className="text-cyan-400">Retrieval-Augmented Generation (RAG)</strong>, 
-                  हम timeless spiritual और philosophical texts से wisdom लाते हैं, connecting your 
-                  personal struggle to shared heritage of human resilience.
-                </p>
-              </div>
-              
-              <div className="p-8 bg-gradient-to-br from-purple-600/20 via-pink-600/20 to-indigo-600/20 backdrop-blur-xl rounded-3xl border border-purple-400/30 hover:border-purple-400/50 transition-all duration-300 group">
-                <Quote className="w-10 h-10 text-purple-400 mb-4 group-hover:scale-110 transition-transform" />
-                <p className="text-2xl font-medium text-white italic leading-relaxed">
-                  "हम stigma को reduce करने और self-compassion को foster करने के लिए 
-                  ancient wisdom को digital age के लिए re-contextualize कर रहे हैं।"
-                </p>
-              </div>
+              <p className="text-lg text-gray-600 leading-relaxed mb-8">
+                Current mental wellness apps fail young people by being clinical and generic. 
+                Aaina offers a revolutionary alternative - not a therapy bot, but an AI-powered 
+                creative partner that transforms confusion into clarity through art and wisdom.
+              </p>
+              <p className="text-lg text-gray-600 leading-relaxed">
+                <strong>Expression is the antidote to despair.</strong> We're building a movement 
+                to reduce stigma and foster self-compassion by re-contextualizing ancient wisdom 
+                for the digital age.
+              </p>
             </div>
-
-            <div className="space-y-8">
-              <div className="bg-gradient-to-br from-blue-600/20 via-cyan-600/20 to-teal-600/20 backdrop-blur-xl rounded-3xl p-8 border border-blue-400/30 hover:border-blue-400/50 hover:scale-105 transition-all duration-300 group">
-                <Users className="w-12 h-12 text-blue-400 mb-6 group-hover:animate-bounce" />
-                <h3 className="text-2xl font-bold text-white mb-4">Beyond an App</h3>
-                <p className="text-gray-300 text-lg leading-relaxed">
-                  एक movement है जो self-compassion और emotional intelligence को foster करती है 
-                  हमारी digital world में।
-                </p>
+            
+            <div className="space-y-6">
+              <div className="bg-gradient-to-r from-purple-100 to-pink-100 rounded-2xl p-6 hover:shadow-lg transition-shadow">
+                <div className="flex items-start space-x-4">
+                  <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Sparkles className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-800 mb-2">A Movement</h3>
+                    <p className="text-gray-600">Building a more empathetic and emotionally intelligent world</p>
+                  </div>
+                </div>
               </div>
               
-              <div className="bg-gradient-to-br from-green-600/20 via-emerald-600/20 to-teal-600/20 backdrop-blur-xl rounded-3xl p-8 border border-green-400/30 hover:border-green-400/50 hover:scale-105 transition-all duration-300 group">
-                <Zap className="w-12 h-12 text-green-400 mb-6 group-hover:animate-pulse" />
-                <h3 className="text-2xl font-bold text-white mb-4">Cutting-Edge Technology</h3>
-                <p className="text-gray-300 text-lg leading-relaxed">
-                  React, Python (FastAPI), Supabase, और advanced AI APIs के साथ built - 
-                  seamless experiences के लिए।
-                </p>
+              <div className="bg-gradient-to-r from-blue-100 to-indigo-100 rounded-2xl p-6 hover:shadow-lg transition-shadow">
+                <div className="flex items-start space-x-4">
+                  <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Shield className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-800 mb-2">Privacy-First Technology</h3>
+                    <p className="text-gray-600">React, Python, Supabase, and encrypted storage for your safety</p>
+                  </div>
+                </div>
               </div>
               
-              <div className="bg-gradient-to-br from-yellow-600/20 via-orange-600/20 to-red-600/20 backdrop-blur-xl rounded-3xl p-8 border border-yellow-400/30 hover:border-yellow-400/50 hover:scale-105 transition-all duration-300 group">
-                <Heart className="w-12 h-12 text-yellow-400 mb-6 group-hover:animate-pulse" />
-                <h3 className="text-2xl font-bold text-white mb-4">Zero Judgment Zone</h3>
-                <p className="text-gray-300 text-lg leading-relaxed">
-                  आपकी emotional complexity की beauty को explore करने के लिए safe space - 
-                  बिना patronizing advice के।
-                </p>
+              <div className="bg-gradient-to-r from-pink-100 to-purple-100 rounded-2xl p-6 hover:shadow-lg transition-shadow">
+                <div className="flex items-start space-x-4">
+                  <div className="w-10 h-10 bg-gradient-to-r from-pink-500 to-purple-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Users className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-800 mb-2">Safe Space</h3>
+                    <p className="text-gray-600">A judgment-free environment where your complexity is celebrated</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section id="stories" className="relative z-40 px-6 lg:px-12 py-32 bg-black/30 backdrop-blur-sm">
-        <div className="max-w-5xl mx-auto text-center">
-          <h2 className="text-5xl lg:text-6xl font-black mb-20">
-            Stories of{' '}
-            <span className="bg-gradient-to-r from-yellow-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
-              Transformation
-            </span>
+      {/* Testimonials Section */}
+      <section id="testimonials" className="px-6 py-20 bg-white/30">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-16">
+            Stories from <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Our Community</span>
           </h2>
-
-          <div className="relative h-80">
-            {testimonials.map((testimonial, index) => (
-              <div
-                key={index}
-                className={`absolute inset-0 transition-all duration-700 ${
-                  index === currentTestimonial 
-                    ? 'opacity-100 translate-y-0 scale-100' 
-                    : 'opacity-0 translate-y-8 scale-95'
-                }`}
-              >
-                <div className="bg-white/5 backdrop-blur-2xl rounded-3xl p-12 border border-white/20 hover:border-white/40 transition-all duration-300 group">
-                  
-                  {/* Stars */}
-                  <div className="flex justify-center mb-6">
-                    {[...Array(5)].map((_, i) => (
-                      <Star 
-                        key={i} 
-                        className="w-6 h-6 text-yellow-400 fill-current mx-1 group-hover:animate-pulse" 
-                        style={{animationDelay: `${i * 0.1}s`}}
-                      />
-                    ))}
-                  </div>
-                  
-                  <Quote className="w-12 h-12 text-purple-400 mx-auto mb-6 group-hover:scale-110 transition-transform" />
-                  
-                  <p className="text-2xl font-medium text-white italic leading-relaxed mb-6">
-                    "{testimonial.text}"
-                  </p>
-                  
-                  <div className="space-y-2">
-                    <p className="text-xl font-bold text-gray-200">— {testimonial.name}</p>
-                    <p className="text-purple-400 font-medium">{testimonial.role}</p>
-                  </div>
-                </div>
+          
+          <div className="relative bg-white/60 backdrop-blur-md border border-purple-200 rounded-2xl p-12 mb-8">
+            <div 
+              className="transition-all duration-500 transform"
+              style={{
+                opacity: 1,
+                transform: 'translateY(0px) scale(1)'
+              }}
+            >
+              <p className="text-xl text-gray-700 italic mb-6 leading-relaxed">
+                "{testimonials[currentTestimonial].text}"
+              </p>
+              <div>
+                <p className="font-semibold text-gray-800">{testimonials[currentTestimonial].author}</p>
+                <p className="text-sm text-gray-600">{testimonials[currentTestimonial].role}</p>
               </div>
-            ))}
+            </div>
           </div>
-
-          <div className="flex justify-center mt-12 space-x-3">
+          
+          <div className="flex justify-center space-x-3">
             {testimonials.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentTestimonial(index)}
-                className={`w-4 h-4 rounded-full transition-all duration-300 ${
+                className={`w-3 h-3 rounded-full transition-all duration-300 ${
                   index === currentTestimonial 
-                    ? 'bg-gradient-to-r from-pink-500 to-purple-500 scale-125' 
-                    : 'bg-white/30 hover:bg-white/50'
+                    ? 'bg-gradient-to-r from-purple-500 to-pink-500 scale-125' 
+                    : 'bg-gray-300 hover:bg-gray-400'
                 }`}
+                aria-label={`Go to testimonial ${index + 1}`}
               />
             ))}
           </div>
         </div>
       </section>
 
-      {/* Final CTA */}
-      <section className="relative z-40 px-6 lg:px-12 py-32">
-        <div className="max-w-5xl mx-auto text-center">
-          <div className="relative overflow-hidden bg-gradient-to-br from-purple-600/30 via-pink-600/30 to-indigo-600/30 backdrop-blur-2xl rounded-3xl p-16 border border-white/20">
-            
-            {/* Background Animation */}
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 animate-pulse"></div>
-            
-            <div className="relative z-10">
-              <h2 className="text-5xl lg:text-6xl font-black mb-8">
-                Ready to Transform Your{' '}
-                <span className="bg-gradient-to-r from-yellow-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
-                  Emotions into Art?
-                </span>
-              </h2>
-              
-              <p className="text-2xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed font-medium">
-                हजारों लोगों के साथ join करें जो अपनी emotional complexity की beauty discover कर रहे हैं। 
-                Self-compassion और emotional intelligence के movement का हिस्सा बनें।
-              </p>
-              
-              <div className="flex flex-col sm:flex-row gap-8 justify-center mb-8">
-                <button className="group relative overflow-hidden">
-                  <div className="absolute -inset-2 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 rounded-2xl blur opacity-50 group-hover:opacity-80 transition-opacity animate-pulse"></div>
-                  <div className="relative bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 px-12 py-5 rounded-2xl font-black text-white text-xl hover:shadow-2xl hover:scale-110 transition-all duration-300 flex items-center justify-center">
-                    Join the Waitlist ✨
-                    <ArrowRight className="ml-3 w-6 h-6 group-hover:translate-x-2 transition-transform" />
-                  </div>
-                </button>
-                
-                <button className="group relative overflow-hidden">
-                  <div className="relative bg-white/10 backdrop-blur-2xl border-2 border-white/30 px-12 py-5 rounded-2xl font-bold text-white text-xl hover:bg-white/20 hover:border-white/50 transition-all duration-300 flex items-center justify-center">
-                    Learn More
-                    <Sparkles className="ml-3 w-6 h-6 group-hover:animate-spin transition-transform" />
-                  </div>
-                </button>
-              </div>
-              
-              <div className="flex items-center justify-center space-x-8 text-gray-400 text-sm">
-                <div className="flex items-center space-x-2">
-                  <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                  <span>Coming Soon</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Lock className="w-4 h-4" />
-                  <span>Privacy-First</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Heart className="w-4 h-4" />
-                  <span>End-to-End Encrypted</span>
-                </div>
-              </div>
+      {/* Final CTA Section */}
+      <section className="px-6 py-20 bg-gradient-to-r from-purple-100 via-pink-100 to-indigo-100">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">
+            Ready to Transform Your <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Emotional Journey?</span>
+          </h2>
+          <p className="text-xl text-gray-600 mb-12 max-w-2xl mx-auto">
+            Join thousands discovering the beauty in their complexity. Your masterpiece awaits.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+            <button className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-8 py-4 rounded-full hover:shadow-xl transform hover:scale-105 transition-all duration-300 text-lg">
+              Join Waitlist
+            </button>
+            <button className="border-2 border-purple-300 text-purple-600 px-8 py-4 rounded-full hover:bg-white/50 hover:border-purple-400 transition-all duration-300 text-lg">
+              Learn More
+            </button>
+          </div>
+          
+          <div className="flex flex-wrap justify-center gap-6 text-sm text-gray-600">
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              <span>Coming Soon</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Shield className="w-4 h-4 text-purple-500" />
+              <span>Privacy-First</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+              <span>End-to-End Encrypted</span>
             </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="relative z-40 px-6 lg:px-12 py-16 border-t border-white/10 bg-black/30 backdrop-blur-sm">
+      <footer className="bg-white border-t border-gray-200 px-6 py-12">
         <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-3 gap-8 mb-12">
-            
-            {/* Brand */}
-            <div className="space-y-4">
-              <div className="flex items-center space-x-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-pink-500 via-purple-500 to-indigo-500 rounded-2xl flex items-center justify-center">
-                  <Sparkles className="w-7 h-7 text-white" />
+          <div className="grid md:grid-cols-3 gap-8">
+            <div>
+              <div className="flex items-center space-x-2 mb-4">
+                <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+                  <Eye className="w-4 h-4 text-white" />
                 </div>
-                <span className="text-2xl font-black text-white">Aaina</span>
+                <span className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                  Aaina
+                </span>
               </div>
-              <p className="text-gray-400 leading-relaxed">
-                Your emotions, your masterpiece. एक नई language for emotional expression और ancient wisdom।
+              <p className="text-gray-600 mb-4">
+                Transforming emotions into art and wisdom. 
+                Building a more emotionally intelligent world.
               </p>
-              
-              {/* Social Icons */}
-              <div className="flex space-x-4 pt-4">
-                <div className="w-10 h-10 bg-white/10 backdrop-blur-xl rounded-full flex items-center justify-center hover:bg-white/20 transition-all duration-300 cursor-pointer group">
-                  <div className="w-5 h-5 bg-gradient-to-r from-pink-400 to-purple-400 rounded group-hover:scale-110 transition-transform"></div>
-                </div>
-                <div className="w-10 h-10 bg-white/10 backdrop-blur-xl rounded-full flex items-center justify-center hover:bg-white/20 transition-all duration-300 cursor-pointer group">
-                  <div className="w-5 h-5 bg-gradient-to-r from-blue-400 to-cyan-400 rounded group-hover:scale-110 transition-transform"></div>
-                </div>
-                <div className="w-10 h-10 bg-white/10 backdrop-blur-xl rounded-full flex items-center justify-center hover:bg-white/20 transition-all duration-300 cursor-pointer group">
-                  <div className="w-5 h-5 bg-gradient-to-r from-yellow-400 to-orange-400 rounded group-hover:scale-110 transition-transform"></div>
-                </div>
+              <div className="flex space-x-4">
+                <a href="#" className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center text-white hover:scale-110 transition-transform" aria-label="Twitter">
+                  <Twitter className="w-4 h-4" />
+                </a>
+                <a href="#" className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center text-white hover:scale-110 transition-transform" aria-label="Instagram">
+                  <Instagram className="w-4 h-4" />
+                </a>
+                <a href="#" className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center text-white hover:scale-110 transition-transform" aria-label="GitHub">
+                  <Github className="w-4 h-4" />
+                </a>
               </div>
             </div>
             
-            {/* Quick Links */}
-            <div className="space-y-4">
-              <h4 className="text-white font-bold text-lg mb-4">Quick Links</h4>
-              <div className="space-y-3">
-                {[
-                  { name: 'Features', href: '#features' },
-                  { name: 'Vision', href: '#vision' },
-                  { name: 'Stories', href: '#stories' },
-                  { name: 'Privacy Policy', href: '#' },
-                  { name: 'Terms of Service', href: '#' }
-                ].map((item) => (
-                  <a 
-                    key={item.name}
-                    href={item.href} 
-                    className="block text-gray-400 hover:text-white hover:translate-x-2 transition-all duration-300 group"
-                  >
-                    <span className="group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-pink-400 group-hover:to-purple-400 group-hover:bg-clip-text transition-all duration-300">
-                      {item.name}
-                    </span>
-                  </a>
-                ))}
+            <div>
+              <h3 className="font-semibold text-gray-800 mb-4">Quick Links</h3>
+              <div className="space-y-2">
+                <a href="#features" className="block text-gray-600 hover:text-purple-600 transition-colors">Features</a>
+                <a href="#vision" className="block text-gray-600 hover:text-purple-600 transition-colors">Our Vision</a>
+                <a href="#testimonials" className="block text-gray-600 hover:text-purple-600 transition-colors">Community Stories</a>
+                <a href="#" className="block text-gray-600 hover:text-purple-600 transition-colors">Privacy Policy</a>
               </div>
             </div>
             
-            {/* Contact & Community */}
-            <div className="space-y-4">
-              <h4 className="text-white font-bold text-lg mb-4">Connect With Us</h4>
-              <div className="space-y-3">
-                <a href="mailto:hello@aaina.app" className="block text-gray-400 hover:text-white transition-colors group">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-gradient-to-r from-pink-500 to-purple-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <Heart className="w-4 h-4 text-white" />
-                    </div>
-                    <span>hello@aaina.app</span>
-                  </div>
-                </a>
-                <a href="#" className="block text-gray-400 hover:text-white transition-colors group">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <Users className="w-4 h-4 text-white" />
-                    </div>
-                    <span>Support Center</span>
-                  </div>
-                </a>
-                <a href="#" className="block text-gray-400 hover:text-white transition-colors group">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <Sparkles className="w-4 h-4 text-white" />
-                    </div>
-                    <span>Community</span>
-                  </div>
-                </a>
+            <div>
+              <h3 className="font-semibold text-gray-800 mb-4">Stay Updated</h3>
+              <div className="flex space-x-2 mb-4">
+                <input 
+                  type="email" 
+                  placeholder="Enter your email"
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
+                />
+                <button className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-lg hover:shadow-lg transition-shadow">
+                  <Mail className="w-4 h-4" />
+                </button>
               </div>
-              
-              {/* Newsletter Signup */}
-              <div className="mt-6 p-4 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10">
-                <p className="text-white font-medium mb-3">Stay Updated</p>
-                <div className="flex space-x-2">
-                  <input 
-                    type="email" 
-                    placeholder="your@email.com" 
-                    className="flex-1 bg-white/10 backdrop-blur-xl border border-white/20 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-purple-400 transition-colors"
-                  />
-                  <button className="bg-gradient-to-r from-pink-500 to-purple-500 px-4 py-2 rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300">
-                    <ArrowRight className="w-4 h-4 text-white" />
-                  </button>
-                </div>
-              </div>
+              <p className="text-sm text-gray-500">
+                Get notified when we launch and receive emotional wellness tips.
+              </p>
             </div>
           </div>
           
-          {/* Bottom Footer */}
-          <div className="pt-8 border-t border-white/10">
-            <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-              <div className="text-center md:text-left">
-                <p className="text-gray-400 text-sm">
-                  © 2024 Aaina. Made with ❤️ in India for emotional wellness worldwide.
-                </p>
-                <p className="text-gray-500 text-xs mt-1">
-                  Your feelings matter. आपकी भावनाएं महत्वपूर्ण हैं।
-                </p>
-              </div>
-              
-              <div className="flex items-center space-x-4 text-xs text-gray-500">
-                <span>🚀 Launching Soon</span>
-                <span>•</span>
-                <span>🔒 Privacy First</span>
-                <span>•</span>
-                <span>🎨 AI Powered</span>
-              </div>
-            </div>
+          <div className="border-t border-gray-200 mt-8 pt-8 text-center text-sm text-gray-500">
+            <p>&copy; 2024 Aaina. Made with ❤️ for emotional wellness.</p>
           </div>
         </div>
       </footer>
-      
-      {/* Back to Top Button */}
-      <button 
-        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        className={`fixed bottom-8 right-8 z-50 w-12 h-12 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full flex items-center justify-center shadow-2xl hover:shadow-purple-500/25 hover:scale-110 transition-all duration-300 ${
-          scrollY > 300 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'
-        }`}
-      >
-        <ChevronDown className="w-6 h-6 text-white rotate-180" />
-      </button>
+
+      <style jsx>{`
+        @keyframes float {
+          0%, 100% {
+            transform: translateY(0px) rotate(0deg);
+          }
+          33% {
+            transform: translateY(-10px) rotate(1deg);
+          }
+          66% {
+            transform: translateY(-5px) rotate(-1deg);
+          }
+        }
+        
+        .animate-float {
+          animation: float 6s ease-in-out infinite;
+        }
+      `}</style>
     </div>
   );
 };

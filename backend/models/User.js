@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 import validator from "mongoose-validator"; // For advanced validation
 import sanitizeHtml from "sanitize-html"; // For sanitizing inputs
 import bcrypt from "bcryptjs"; // For secure password hashing
+import net from "net";
+
 
 // Define allowed languages for personalization
 const ALLOWED_LANGUAGES = ["en", "hi", "es", "fr", "zh"]; // Extended for future multilingual support
@@ -118,17 +120,16 @@ const userSchema = new mongoose.Schema(
           trim: true,
           maxlength: [100, "Device name must be 100 characters or less"],
         },
+        
         ip: {
           type: String,
           trim: true,
           validate: {
-            validator: (value) =>
-              !value ||
-              /^(\d{1,3}\.){3}\d{1,3}$/.test(value) ||
-              /^([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$/.test(value),
+            validator: (value) => !value || net.isIP(value) !== 0,
             message: "Invalid IP address format",
           },
         },
+
         token: {
           type: String,
           trim: true,
@@ -198,7 +199,7 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
 
 // Static method for finding user by email
 userSchema.statics.findByEmail = async function (email) {
-  return this.findOne({ email: email.toLowerCase() }).lean();
+  return this.findOne({ email: email.toLowerCase() });
 };
 
 // Static method for cleaning up expired sessions

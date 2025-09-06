@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import express from "express";
 import dotenv from "dotenv";
 import helmet from "helmet"; // For security headers
@@ -8,7 +9,9 @@ import { createLogger, format, transports } from "winston"; // For structured lo
 import connectDB from "./config/db.js";
 
 // Import routes
-import reflectionRoutes from "./routes/reflectionRoutes.js";
+import userRoutes from "./routes/userRoute.js";
+
+import reflectionRoutes from "./routes/reflectionroutes.js";
 import voiceSessionRoutes from "./routes/voiceSessionRoutes.js";
 import cluster from "cluster";
 import os from "os";
@@ -91,6 +94,7 @@ app.get("/", (req, res) => {
 });
 
 // API routes
+app.use("/api/users", userRoutes);
 app.use("/api/reflections", reflectionRoutes);
 app.use("/api/voice-sessions", voiceSessionRoutes);
 

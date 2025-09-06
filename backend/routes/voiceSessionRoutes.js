@@ -1,44 +1,36 @@
-import express from "express";
-import VoiceSession from "../models/VoiceSession.js";
+import express from 'express';
+import {
+  createVoiceSession,
+  getUserVoiceSessions,
+  getVoiceSessionById,
+  updateVoiceSession,
+  deleteVoiceSession,
+  retryFailedSessions,
+  getStatusAnalytics
+} from '../controllers/voiceSession.controller.js';
+import { protect } from '../middleware/authMiddleware.js'; // Assuming authentication middleware
 
 const router = express.Router();
 
 // Create a new voice session
-router.post("/", async (req, res) => {
-  try {
-    const session = new VoiceSession({
-      user: req.body.user,
-      caretaker: req.body.caretaker,
-      startTime: req.body.startTime,
-      endTime: req.body.endTime,
-      duration: req.body.duration,
-    });
+router.post('/', protect, createVoiceSession);
 
-    const saved = await session.save();
-    res.status(201).json(saved);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-});
+// Get all voice sessions for a user with pagination
+router.get('/user/:userId', protect, getUserVoiceSessions);
 
-// Get all sessions for a user
-router.get("/user/:userId", async (req, res) => {
-  try {
-    const sessions = await VoiceSession.find({ user: req.params.userId }).populate("caretaker", "name email");
-    res.json(sessions);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+// Get a single voice session by ID
+router.get('/:id', protect, getVoiceSessionById);
 
-// Get all sessions for a caretaker
-router.get("/caretaker/:caretakerId", async (req, res) => {
-  try {
-    const sessions = await VoiceSession.find({ caretaker: req.params.caretakerId }).populate("user", "name email");
-    res.json(sessions);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+// Update a voice session
+router.put('/:id', protect, updateVoiceSession);
+
+// Delete a voice session
+router.delete('/:id', protect, deleteVoiceSession);
+
+// Retry failed sessions
+router.post('/retry-failed', protect, retryFailedSessions);
+
+// Get status analytics
+router.get('/analytics/:startDate/:endDate', protect, getStatusAnalytics);
 
 export default router;

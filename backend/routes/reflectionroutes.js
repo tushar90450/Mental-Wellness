@@ -1,58 +1,32 @@
-// routes/reflection.routes.js
 import express from "express";
-import Reflection from "../models/Reflection.js";
+import {
+  createReflection,
+  getReflection,
+  updateReflection,
+  deleteReflection,
+  getUserReflections,
+  getEmotionTrends,
+} from "../controllers/reflection.controller.js";
+import { protect } from "../middleware/authMiddleware.js"; // Assuming authentication middleware
 
 const router = express.Router();
 
-/**
- * @route   POST /api/reflections
- * @desc    Create a new reflection
- * @access  Public (you may later add auth middleware here)
- */
-router.post("/", async (req, res) => {
-  try {
-    const { user, rawInput, inputType } = req.body;
+// Create a new reflection (authenticated)
+router.post("/", protect, createReflection);
 
-    if (!user || !rawInput || !inputType) {
-      return res.status(400).json({ error: "user, rawInput, and inputType are required." });
-    }
+// Get a single reflection by ID
+router.get("/:id", protect, getReflection);
 
-    const reflection = new Reflection({ user, rawInput, inputType });
-    const saved = await reflection.save();
+// Update a reflection by ID
+router.put("/:id", protect, updateReflection);
 
-    res.status(201).json({
-      success: true,
-      message: "Reflection created successfully",
-      data: saved,
-    });
-  } catch (err) {
-    console.error("Error creating reflection:", err.message);
-    res.status(500).json({ error: "Server error. Could not create reflection." });
-  }
-});
+// Delete a reflection by ID
+router.delete("/:id", protect, deleteReflection);
 
-/**
- * @route   GET /api/reflections/:userId
- * @desc    Get all reflections for a specific user
- * @access  Public (you may later restrict this with auth)
- */
-router.get("/:userId", async (req, res) => {
-  try {
-    const { userId } = req.params;
+// Get paginated user reflections
+router.get("/user/:userId", protect, getUserReflections);
 
-    const reflections = await Reflection.find({ user: userId })
-      .populate("wisdomReference") // expands linked wisdom
-      .sort({ createdAt: -1 });
-
-    res.status(200).json({
-      success: true,
-      count: reflections.length,
-      data: reflections,
-    });
-  } catch (err) {
-    console.error("Error fetching reflections:", err.message);
-    res.status(500).json({ error: "Server error. Could not fetch reflections." });
-  }
-});
+// Get emotion trends for a user
+router.get("/trends/:userId", protect, getEmotionTrends);
 
 export default router;

@@ -1,157 +1,151 @@
-import VoiceSession from "../models/VoiceSession.js";
-import { v4 as uuidv4 } from "uuid";
+import VoiceSession from '../models/VoiceSession.js';
+import asyncHandler from 'express-async-handler'; // For handling async errors
 
-/**
- * Unified response helper
- */
-const sendResponse = (res, status, success, data = null, error = null, meta = {}) => {
-  return res.status(status).json({
-    success,
-    data,
-    error,
-    meta: {
-      requestId: meta.requestId || uuidv4(),
-      timestamp: new Date().toISOString(),
-      ...meta,
-    },
+// @desc    Create a new voice session
+// @route   POST /api/voice-sessions
+// @access  Private
+const createVoiceSession = asyncHandler(async (req, res) => {
+  const { audioUrl, transcription, reflection, duration } = req.body;
+
+  const voiceSession = new VoiceSession({
+    user: req.user._id, // Assuming user is added to req by auth middleware
+    audioUrl,
+    transcription,
+    reflection,
+    duration
   });
-};
 
-/**
- * Async wrapper to avoid repetitive try/catch
- */
-const asyncHandler = (fn) => (req, res, next) =>
-  Promise.resolve(fn(req, res, next)).catch((err) =>
-    sendResponse(res, 500, false, null, err.message)
-  );
-
-/**
- * Create a new voice session
- */
-export const createVoiceSession = asyncHandler(async (req, res) => {
-  const session = new VoiceSession(req.body);
-  await session.save();
-
-  return sendResponse(res, 201, true, session.toObject({ versionKey: false }), null, {
-    message: "Voice session created successfully",
-  });
+  const createdSession = await voiceSession.save();
+  res.status(201).json(createdSession);
 });
 
-/**
- * Get voice session by ID
- */
-export const getVoiceSessionById = asyncHandler(async (req, res) => {
-  const session = await VoiceSession.findById(req.params.id)
-    .populate("user", "username email")
-    .populate("reflection", "text meaning")
-    .select("-__v")
-    .lean();
+// @desc    Get user voice sessions with pagination
+// @route   GET /api/voice-sessions/user/:userId
+// @access  Private
+const getUserVoiceSessions = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
 
-  if (!session) {
-    return sendResponse(res, 404, false, null, "Voice session not found");
+  // Verify user authorization
+  if (req.user._id.toString() !== userId && !req.user.isAdmin) {
+    res.status(403);
+    throw new Error('Not authorized to access these sessions');
   }
 
-  return sendResponse(res, 200, true, session, null, {
-    message: "Voice session retrieved successfully",
-  });
+  const sessions = await VoiceSession.getUserSessions(userId, page, limit);
+  res.json(sessions);
 });
 
-/**
- * Get user voice sessions with pagination, filtering & sorting
- */
-export const getUserVoiceSessions = asyncHandler(async (req, res) => {
-  const page = Math.max(parseInt(req.query.page) || 1, 1);
-  const limit = Math.min(parseInt(req.query.limit) || 10, 100);
-  const skip = (page - 1) * limit;
+// @desc    Get single voice session by ID
+// @route   GET /api/voice-sessions/:id
+// @access  Private
+const getVoiceSessionById = asyncHandler(async (req, res) => {
+  const voiceSession = await VoiceSession.findById(req.params.id).populate('user reflection');
 
-  const { status, sortBy = "createdAt", order = "desc" } = req.query;
-
-  const filter = { user: req.params.userId };
-  if (status) filter.status = status;
-
-  const sessions = await VoiceSession.find(filter)
-    .sort({ [sortBy]: order === "asc" ? 1 : -1 })
-    .skip(skip)
-    .limit(limit)
-    .select("-__v")
-    .lean();
-
-  const total = await VoiceSession.countDocuments(filter);
-
-  return sendResponse(res, 200, true, {
-    sessions,
-    pagination: {
-      total,
-      page,
-      limit,
-      totalPages: Math.ceil(total / limit),
-    },
-  });
-});
-
-/**
- * Update a voice session
- */
-export const updateVoiceSession = asyncHandler(async (req, res) => {
-  const session = await VoiceSession.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-    context: "query",
-  })
-    .select("-__v")
-    .lean();
-
-  if (!session) {
-    return sendResponse(res, 404, false, null, "Voice session not found");
+  if (!voiceSession) {
+    res.status(404);
+    throw new Error('Voice session not found');
   }
 
-  return sendResponse(res, 200, true, session, null, {
-    message: "Voice session updated successfully",
-  });
-});
-
-/**
- * Delete a voice session
- */
-export const deleteVoiceSession = asyncHandler(async (req, res) => {
-  const session = await VoiceSession.findByIdAndDelete(req.params.id)
-    .select("-__v")
-    .lean();
-
-  if (!session) {
-    return sendResponse(res, 404, false, null, "Voice session not found");
+  // Verify user authorization
+  if (voiceSession.user._id.toString() !== req.user._id.toString() && !req.user.isAdmin) {
+    res.status(403);
+    throw new Error('Not authorized to access this session');
   }
 
-  return sendResponse(res, 200, true, { message: "Voice session deleted" });
+  res.json(voiceSession);
 });
 
-/**
- * Retry failed sessions
- */
-export const retryFailedSessions = asyncHandler(async (req, res) => {
+// @desc    Update voice session
+// @route   PUT /api/voice-sessions/:id
+// @access  Private
+const updateVoiceSession = asyncHandler(async (req, res) => {
+  const voiceSession = await VoiceSession.findById(req.params.id);
+
+  if (!voiceSession) {
+    res.status(404);
+    throw new Error('Voice session not found');
+  }
+
+  // Verify user authorization
+  if (voiceSession.user.toString() !== req.user._id.toString() && !req.user.isAdmin) {
+    res.status(403);
+    throw new Error('Not authorized to update this session');
+  }
+
+  const { audioUrl, transcription, reflection, duration, status, errorMessage } = req.body;
+
+  voiceSession.audioUrl = audioUrl || voiceSession.audioUrl;
+  voiceSession.transcription = transcription || voiceSession.transcription;
+  voiceSession.reflection = reflection || voiceSession.reflection;
+  voiceSession.duration = duration || voiceSession.duration;
+  voiceSession.status = status || voiceSession.status;
+  voiceSession.errorMessage = errorMessage || voiceSession.errorMessage;
+
+  const updatedSession = await voiceSession.save();
+  res.json(updatedSession);
+});
+
+// @desc    Delete voice session
+// @route   DELETE /api/voice-sessions/:id
+// @access  Private
+const deleteVoiceSession = asyncHandler(async (req, res) => {
+  const voiceSession = await VoiceSession.findById(req.params.id);
+
+  if (!voiceSession) {
+    res.status(404);
+    throw new Error('Voice session not found');
+  }
+
+  // Verify user authorization
+  if (voiceSession.user.toString() !== req.user._id.toString() && !req.user.isAdmin) {
+    res.status(403);
+    throw new Error('Not authorized to delete this session');
+  }
+
+  await voiceSession.remove();
+  res.json({ message: 'Voice session removed' });
+});
+
+// @desc    Retry failed sessions
+// @route   POST /api/voice-sessions/retry-failed
+// @access  Private
+const retryFailedSessions = asyncHandler(async (req, res) => {
+  // Only allow admin users
+  if (!req.user.isAdmin) {
+    res.status(403);
+    throw new Error('Admin access required');
+  }
+
   const result = await VoiceSession.retryFailedSessions();
-  return sendResponse(res, 200, true, result, null, {
-    message: "Failed sessions reset to pending",
-  });
+  res.json({ message: 'Retry initiated', result });
 });
 
-/**
- * Get pipeline status analytics
- */
-export const getStatusAnalytics = asyncHandler(async (req, res) => {
-  const { startDate, endDate } = req.query;
-
-  if (!startDate || !endDate) {
-    return sendResponse(res, 400, false, null, "Start and end dates are required");
+// @desc    Get status analytics
+// @route   GET /api/voice-sessions/analytics/:startDate/:endDate
+// @access  Private
+const getStatusAnalytics = asyncHandler(async (req, res) => {
+  // Only allow admin users
+  if (!req.user.isAdmin) {
+    res.status(403);
+    throw new Error('Admin access required');
   }
 
+  const { startDate, endDate } = req.params;
   const analytics = await VoiceSession.getStatusAnalytics(
     new Date(startDate),
     new Date(endDate)
   );
-
-  return sendResponse(res, 200, true, analytics, null, {
-    message: "Pipeline analytics generated successfully",
-    range: { startDate, endDate },
-  });
+  res.json(analytics);
 });
+
+export {
+  createVoiceSession,
+  getUserVoiceSessions,
+  getVoiceSessionById,
+  updateVoiceSession,
+  deleteVoiceSession,
+  retryFailedSessions,
+  getStatusAnalytics
+};
